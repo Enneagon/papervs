@@ -1,0 +1,452 @@
+#new:Formation $Formation_00
+{
+	$ShiftT 00000001 0000000A 00000000 00000000 00000000 00000000
+    $Peach 00000002 00000009 00000000 00000000 00000000 00000000
+    $RussT 00000003 00000008 00000000 00000000 00000000 00000000
+}
+
+#new:FormationTable $FormationTable
+{
+	$SJIS_80220FD8 00000003 $Formation_00 $Stage_802342E0 00000000
+	00000000 00000000 00000000 00000000 00000000
+}
+
+#new:StageTable $StageTable
+{
+	$ASCII_80234980 $Stage_802342E0
+	00000000 00000000
+}
+
+#new:Stage $Stage_802342E0
+{
+	$ASCII_802348D0  % kkj_tex
+	$ASCII_802348C0  % kkj_bt01_shape
+	$ASCII_802348B0  % kkj_bt01_hit
+	$Script_BeforeBattle_802342A0
+	$Script_AfterBattle_802342C0
+	$ASCII_802348A8  % kpa_bg
+	$ForegroundModelList_802342D0
+	00000000
+	00000000
+	00000000
+}
+
+#new:ASCII $ASCII_80234980
+{
+	"kpa_01"
+}
+
+#new:ASCII $ASCII_802348B0
+{
+	"kkj_bt01_hit"
+}
+
+#new:ASCII $ASCII_802348C0
+{
+	"kkj_bt01_shape"
+}
+
+#new:ASCII $ASCII_802348D0
+{
+	"kkj_tex"
+}
+
+#new:ASCII $ASCII_802348A8
+{
+	"kpa_bg"
+}
+
+#new:Script $Script_AfterBattle_802342C0
+{
+    0:  Return
+    8:  End
+}
+
+#new:ForegroundModelList $ForegroundModelList_802342D0
+{
+	~Model:kkj_bt01:hana
+	~Model:kkj_bt01:ha1
+	~Model:kkj_bt01:ha2
+	00000000
+}
+
+#new:Script $Script_BeforeBattle_802342A0
+{
+    0:  Call  SetSpriteShading  ( FFFFFFFF )
+		Exec $Script_GangstaBob
+   10:  Return
+   18:  End
+}
+
+#new:Script $Script_GangstaBob
+{
+	Thread
+		
+	EndThread
+	Return
+	End
+}
+
+#new:DefenseTable $DefenseTable_80219610
+{
+	.Element:Normal 00000000
+	.Element:End
+}
+
+#new:StatusTable $StatusTable_8021961C
+{
+	.Status:Normal      0`
+	.Status:Default     0`
+	.Status:Sleep     100`
+	.Status:Poison    100`
+	.Status:Frozen    100`
+	.Status:Dizzy     100`
+	.Status:Fear      100`
+	.Status:Static    100`
+	.Status:Paralyze  100`
+	.Status:Shrink    100`
+	.Status:Stop      100`
+	.Status:DefaultTurnMod    0`
+	.Status:SleepTurnMod      0`
+	.Status:PoisonTurnMod     0`
+	.Status:FrozenTurnMod     0`
+	.Status:DizzyTurnMod      0`
+	.Status:FearTurnMod       0`
+	.Status:StaticTurnMod     0`
+	.Status:ParalyzeTurnMod   0`
+	.Status:ShrinkTurnMod     0`
+	.Status:StopTurnMod       0`
+	.Status:End
+}
+
+#new:PartsTable $PartsTable_802196C8
+{
+	00800000 01000000 001400FF $IdleAnimations_80219714 $DefenseTable_80219610 00000000 00000000 00F60000 00000000
+}
+
+#new:Actor $ShiftT
+{
+	% stats
+	[Index]         7b
+	[Level]         5`b
+	[MaxHP]         2`b
+	[Coins]         1`b
+	[Flags]       00000000
+	[StatusTable] $StatusTable_8021961C
+	% ai
+	[PartsCount]    1`s
+	[PartsTable]  $PartsTable_802196C8
+	[Script]      $Script_Init_ShiftT
+	% move effectiveness
+	[Escape]       90`b
+	[Item]        100`b
+	[AirLift]     100`b
+	[Hurricane]    90`b % Bow's "Spook" as well
+	[UpAndAway]    95`b
+	[PowerBounce] 100`b
+	[SpinSmash]     0`b % weight (0-4)
+	% ui positions
+	[Size]         24`b  24`b % width height
+	[HealthBar]     0`b   0`b % dx dy
+	[StatusTurn]  -10`b  20`b % dx dy
+	[StatusIcon]   10`b  20`b % dx dy
+}
+
+#new:IdleAnimations $IdleAnimations_80219714
+{
+	.Status:Normal    00650001
+	.Status:Stone     00650000
+	.Status:Sleep     00650006
+	.Status:Poison    00650001
+	.Status:Stop      00650000
+	.Status:Static    00650001
+	.Status:Paralyze  00650000
+	.Status:Dizzy     00650006
+	.Status:Fear      00650006
+	.Status:End
+}
+
+#new:Script $Script_Init_ShiftT
+{
+        Call  SetActorPos ( .Actor:Self 50` 95` -18` )
+    0:  Call  BindTakeTurn      ( .Actor:Self $Script_TakeTurn_ShiftT )
+   28:  Call  BindHandleEvent   ( .Actor:Self $Script_HandleEvent_ShiftT )
+   3C:  Return
+   44:  End
+}
+
+#new:Script $Script_HandleEvent_ShiftT
+{
+    0:  Call  UseIdleAnimation  ( .Actor:Self .False )
+   14:  Call  EnableIdleScript  ( .Actor:Self 00000000 )
+  688:  Call  EnableIdleScript  ( .Actor:Self 00000001 )
+  69C:  Call  UseIdleAnimation  ( .Actor:Self .True )
+  6B0:  Return
+  6B8:  End
+}
+
+#new:Script $Script_TakeTurn_ShiftT
+{
+    0:  Call  UseIdleAnimation  ( .Actor:Self .False )
+   14:  Call  EnableIdleScript  ( .Actor:Self 00000000 )
+  C90:  Call  EnableIdleScript  ( .Actor:Self 00000001 )
+  CA4:  Call  UseIdleAnimation  ( .Actor:Self .True )
+  CB8:  Return
+  CC0:  End
+}
+
+#new:DefenseTable $DefenseTable_8021AFD0
+{
+	.Element:Normal 00000000
+	.Element:End
+}
+
+#new:StatusTable $StatusTable_8021AFDC
+{
+	.Status:Normal      0`
+	.Status:Default     0`
+	.Status:Sleep     100`
+	.Status:Poison     80`
+	.Status:Frozen    100`
+	.Status:Dizzy     100`
+	.Status:Fear       80`
+	.Status:Static     80`
+	.Status:Paralyze  100`
+	.Status:Shrink    100`
+	.Status:Stop      100`
+	.Status:DefaultTurnMod    0`
+	.Status:SleepTurnMod      0`
+	.Status:PoisonTurnMod     0`
+	.Status:FrozenTurnMod     0`
+	.Status:DizzyTurnMod      0`
+	.Status:FearTurnMod       0`
+	.Status:StaticTurnMod     0`
+	.Status:ParalyzeTurnMod   0`
+	.Status:ShrinkTurnMod     0`
+	.Status:StopTurnMod       0`
+	.Status:End
+}
+
+#new:PartsTable $PartsTable_8021B088
+{
+	00800000 01000000 001800FF $IdleAnimations_8021B0D4 $DefenseTable_8021AFD0 00000010 00000000 00F40000 00000000
+}
+
+#new:Actor $Peach
+{
+	% stats
+	[Index]         9b
+	[Level]         6`b
+	[MaxHP]         2`b
+	[Coins]         1`b
+	[Flags]       00000000
+	[StatusTable] $StatusTable_8021AFDC
+	% ai
+	[PartsCount]    1`s
+	[PartsTable]  $PartsTable_8021B088
+	[Script]      $Script_Init_Peach
+	% move effectiveness
+	[Escape]       90`b
+	[Item]        100`b
+	[AirLift]      95`b
+	[Hurricane]    90`b % Bow's "Spook" as well
+	[UpAndAway]    95`b
+	[PowerBounce] 100`b
+	[SpinSmash]     0`b % weight (0-4)
+	% ui positions
+	[Size]         24`b  28`b % width height
+	[HealthBar]     0`b   0`b % dx dy
+	[StatusTurn]  -10`b  20`b % dx dy
+	[StatusIcon]   10`b  20`b % dx dy
+}
+
+#new:IdleAnimations $IdleAnimations_8021B0D4
+{
+	.Status:Normal    00D60001
+	.Status:Stone     00D60000
+	.Status:Sleep     00D6000A
+	.Status:Poison    00D60001
+	.Status:Stop      00D60000
+	.Status:Static    00D60001
+	.Status:Paralyze  00D60000
+	.Status:Dizzy     00D60009
+	.Status:Fear      00D60009
+	.Status:End
+}
+
+#new:Script $Script_Init_Peach
+{
+        Call  SetActorPos ( .Actor:Self 50` 95` -18` )
+        Call  SetActorYaw ( .Actor:Self 180` )
+    0:  Call  BindTakeTurn      ( .Actor:Self $Script_TakeTurn_8021BDDC )
+   28:  Call  BindHandleEvent   ( .Actor:Self $Script_HandleEvent_8021B494 )
+   3C:  Return
+   44:  End
+}
+
+#new:Script $Script_HandleEvent_8021B494
+{
+    0:  Call  UseIdleAnimation  ( .Actor:Self .False )
+   14:  Call  EnableIdleScript  ( .Actor:Self 00000000 )
+  7A4:  Call  EnableIdleScript  ( .Actor:Self 00000001 )
+  7B8:  Call  UseIdleAnimation  ( .Actor:Self .True )
+  7CC:  Return
+  7D4:  End
+}
+
+#new:Script $Script_TakeTurn_8021BDDC
+{
+    0:  Call  UseIdleAnimation  ( .Actor:Self .False )
+   14:  Call  EnableIdleScript  ( .Actor:Self 00000000 )
+  CE8:  Call  EnableIdleScript  ( .Actor:Self 00000001 )
+  CFC:  Call  UseIdleAnimation  ( .Actor:Self .True )
+  D10:  Return
+  D18:  End
+}
+
+#new:DefenseTable $DefenseTable_8021CB00
+{
+	.Element:Normal 00000000
+	.Element:End
+}
+
+#new:DefenseTable $DefenseTable_8021CB0C
+{
+	.Element:Normal 00000000
+	.Element:End
+}
+
+#new:StatusTable $StatusTable_8021CB18
+{
+	.Status:Normal      0`
+	.Status:Default     0`
+	.Status:Sleep     100`
+	.Status:Poison    100`
+	.Status:Frozen    100`
+	.Status:Dizzy     100`
+	.Status:Fear      100`
+	.Status:Static    100`
+	.Status:Paralyze  100`
+	.Status:Shrink    100`
+	.Status:Stop      100`
+	.Status:DefaultTurnMod    0`
+	.Status:SleepTurnMod      0`
+	.Status:PoisonTurnMod     0`
+	.Status:FrozenTurnMod     0`
+	.Status:DizzyTurnMod      0`
+	.Status:FearTurnMod       0`
+	.Status:StaticTurnMod     0`
+	.Status:ParalyzeTurnMod   0`
+	.Status:ShrinkTurnMod     0`
+	.Status:StopTurnMod       0`
+	.Status:End
+}
+
+#new:StatusTable $StatusTable_8021CBC4
+{
+	.Status:Normal      0`
+	.Status:Default     0`
+	.Status:Sleep     100`
+	.Status:Poison     80`
+	.Status:Frozen    100`
+	.Status:Dizzy     100`
+	.Status:Fear       80`
+	.Status:Static     80`
+	.Status:Paralyze  100`
+	.Status:Shrink    100`
+	.Status:Stop      100`
+	.Status:DefaultTurnMod    0`
+	.Status:SleepTurnMod      0`
+	.Status:PoisonTurnMod     0`
+	.Status:FrozenTurnMod     0`
+	.Status:DizzyTurnMod      1`
+	.Status:FearTurnMod       0`
+	.Status:StaticTurnMod     0`
+	.Status:ParalyzeTurnMod   0`
+	.Status:ShrinkTurnMod     0`
+	.Status:StopTurnMod       0`
+	.Status:End
+}
+
+#new:PartsTable $PartsTable_8021CC70
+{
+	00800000 02000000 001800FF $IdleAnimations_8021CD28 $DefenseTable_8021CB0C 00004000 00000000 00F60000 00000000
+}
+
+#new:Actor $RussT
+{
+	% stats
+	[Index]         8b
+	[Level]         6`b
+	[MaxHP]         2`b
+	[Coins]         1`b
+	[Flags]       00000200
+	[StatusTable] $StatusTable_8021CBC4
+	% ai
+	[PartsCount]    1`s
+	[PartsTable]  $PartsTable_8021CC70
+	[Script]      $Script_Init_8021CDD8
+	% move effectiveness
+	[Escape]       90`b
+	[Item]        100`b
+	[AirLift]     100`b
+	[Hurricane]   100`b % Bow's "Spook" as well
+	[UpAndAway]    95`b
+	[PowerBounce] 100`b
+	[SpinSmash]     0`b % weight (0-4)
+	% ui positions
+	[Size]         36`b  26`b % width height
+	[HealthBar]     0`b   0`b % dx dy
+	[StatusTurn]  -10`b  20`b % dx dy
+	[StatusIcon]   10`b  20`b % dx dy
+}
+
+#new:IdleAnimations $IdleAnimations_8021CD28
+{
+	.Status:Normal    00A90001
+	.Status:Stone     00A90000
+	.Status:Sleep     00A9000B
+	.Status:Poison    00A90001
+	.Status:Stop      00A90000
+	.Status:Static    00A90001
+	.Status:Paralyze  00A90000
+	.Status:Dizzy     00A9000C
+	.Status:Fear      00A9000C
+	.Status:End
+}
+
+#new:Script $Script_Init_8021CDD8
+{
+        Call  SetActorPos ( .Actor:Self -250` 0` 0` )
+        Call  SetActorYaw ( .Actor:Self 180` )
+    0:  Call  BindTakeTurn      ( .Actor:Self $Script_TakeTurn_8021D74C )
+   28:  Call  BindHandleEvent   ( .Actor:Self $Script_HandleEvent_8021D158 )
+   3C:  Return
+   44:  End
+}
+
+#new:Script $Script_HandleEvent_8021D158
+{
+    0:  Call  UseIdleAnimation  ( .Actor:Self .False )
+   14:  Call  EnableIdleScript  ( .Actor:Self 00000000 )
+  5BC:  Call  EnableIdleScript  ( .Actor:Self FFFFFFFF )
+  5D0:  Call  UseIdleAnimation  ( .Actor:Self .True )
+  5E4:  Return
+  5EC:  End
+}
+
+#new:Script $Script_TakeTurn_8021D74C
+{
+    0:  Call  UseIdleAnimation  ( .Actor:Self .False )
+   14:  Call  EnableIdleScript  ( .Actor:Self 00000000 )
+  7E0:  Call  EnableIdleScript  ( .Actor:Self FFFFFFFF )
+  7F4:  Call  UseIdleAnimation  ( .Actor:Self .True )
+  808:  Return
+  810:  End
+}
+
+#new:SJIS $SJIS_80220FD8
+{
+	クリボー % kuribo-
+}
+

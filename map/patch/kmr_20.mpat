@@ -1,0 +1,40 @@
+@ $Script_8024FD70 {
+    ExecWait $Script_AddStats
+    Call GotoMap ( "kmr_32" ~Entry:kmr_32:entry_n )
+    Return
+    End
+}
+
+#new:Script $Script_AddStats
+{
+    Set *GB_StoryProgress .Story:Ch8_ReachedPeachsCastle
+    Call $GivePlayerStartingStats (  )
+    Wait 1`
+    Return
+    End
+}
+
+#new:Function $GivePlayerStartingStats {
+    LIO t0, 8010F290
+    ORI t2, r0, 32 % hex for 50
+    ORI t3, r0, 1E % hex for 30
+    ORI t4, r0, 1B % hex for 6
+    ORI t5, r0, 1 % hex for 1
+    ORI t6, r0, 2 % hex for 2
+    ORI t7, r0, 7 % hex for 7
+    SB t6, 0000 (t0) % set Boots
+    SB t6, 0001 (t0) % set Hammer
+    SB t5, 0002 (t0) % set hp
+    SB t2, 0003 (t0) % max hp
+    SB t2, 0004 (t0) % true max hp
+    SB t2, 0005 (t0) % set fp
+    SB t2, 0006 (t0) % max fp
+    SB t2, 0007 (t0) % true max fp
+    SB t3, 0008 (t0) % max BP
+    SB t4, 0009 (t0) % level
+    SB t5, 000A (t0) % Lucky Star
+    SB t7, 0290 (t0) 
+    SB t7, 028E (t0) %star power
+    JR RA
+    ORI v0, r0, 2
+}
