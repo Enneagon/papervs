@@ -1,3 +1,5 @@
+#import enemy/00_Goomba.bpat
+
 #new:Formation $Formation_00
 {
 	$ShiftT 00000001 0000000A 00000000 00000000 00000000 00000000
@@ -7,53 +9,28 @@
 
 #new:FormationTable $FormationTable
 {
-	$SJIS_80220FD8 00000003 $Formation_00 $Stage_802342E0 00000000
+	"Storytime" 00000003 $Formation_00 $Stage_Storytime 00000000
 	00000000 00000000 00000000 00000000 00000000
 }
 
 #new:StageTable $StageTable
 {
-	$ASCII_80234980 $Stage_802342E0
+	"Storytime" $Stage_Storytime
 	00000000 00000000
 }
 
-#new:Stage $Stage_802342E0
+#new:Stage $Stage_Storytime
 {
-	$ASCII_802348D0  % kkj_tex
-	$ASCII_802348C0  % kkj_bt01_shape
-	$ASCII_802348B0  % kkj_bt01_hit
+	"kkj_tex"  % kkj_tex
+	"kmr_new_shape"  % kkj_bt01_shape
+	"kmr_new_hit"  % kkj_bt01_hit
 	$Script_BeforeBattle_802342A0
-	$Script_AfterBattle_802342C0
-	$ASCII_802348A8  % kpa_bg
+	00000000
+	00000000
 	$ForegroundModelList_802342D0
 	00000000
 	00000000
 	00000000
-}
-
-#new:ASCII $ASCII_80234980
-{
-	"kpa_01"
-}
-
-#new:ASCII $ASCII_802348B0
-{
-	"kkj_bt01_hit"
-}
-
-#new:ASCII $ASCII_802348C0
-{
-	"kkj_bt01_shape"
-}
-
-#new:ASCII $ASCII_802348D0
-{
-	"kkj_tex"
-}
-
-#new:ASCII $ASCII_802348A8
-{
-	"kpa_bg"
 }
 
 #new:Script $Script_AfterBattle_802342C0
@@ -64,24 +41,55 @@
 
 #new:ForegroundModelList $ForegroundModelList_802342D0
 {
-	~Model:kkj_bt01:hana
-	~Model:kkj_bt01:ha1
-	~Model:kkj_bt01:ha2
 	00000000
 }
 
 #new:Script $Script_BeforeBattle_802342A0
 {
     0:  Call  SetSpriteShading  ( FFFFFFFF )
-		Exec $Script_GangstaBob
+	Exec $Script_GangstaBob
    10:  Return
    18:  End
 }
 
 #new:Script $Script_GangstaBob
 {
+	SetGroup A
 	Thread
-		
+		Loop
+			Call  MakeLerp  ( 0` -10` 10` .Easing:CosIn )
+		88:  Loop
+		94:  	Call  UpdateLerp ( )
+		A0:  	Call  TranslateGroup    ( ~Model:kmr_new:BodyGroup 00000000 *Var0 00000000 )
+				Call  TranslateGroup    ( ~Model:kmr_new:ArmGroupL 00000000 *Var0 00000000 )
+				Call  TranslateGroup    ( ~Model:kmr_new:ArmGroupR 00000000 *Var0 00000000 )
+				Add *Var0 95`
+				Call  SetActorPos ( .Actor:Enemy0 60` *Var0 -18` )
+		BC:  	Wait  1`
+		C8:  	If  *Var1  ==  00000000
+		D8:  		BreakLoop
+		E0:  	EndIf
+		E8:  EndLoop
+		Wait 10`
+			Call  MakeLerp  ( -10` 0` 30` .Easing:CosInOut )
+		88:  Loop
+		94:  	Call  UpdateLerp ( )
+		A0:  	Call  TranslateGroup    ( ~Model:kmr_new:BodyGroup 00000000 *Var0 00000000 )
+				Call  TranslateGroup    ( ~Model:kmr_new:ArmGroupL 00000000 *Var0 00000000 )
+				Call  TranslateGroup    ( ~Model:kmr_new:ArmGroupR 00000000 *Var0 00000000 )
+				Add *Var0 95`
+				Call  SetActorPos ( .Actor:Enemy0 60` *Var0 -18` )
+		BC:  	Wait  1`
+		C8:  	If  *Var1  ==  00000000
+		D8:  		BreakLoop
+		E0:  	EndIf
+		E8:  EndLoop
+		Wait 10`
+		Call GetActorVar ( .Actor:Enemy0 00000000 *Var0 )
+		If *Var0 == 00000001
+			BreakLoop
+		EndIf
+		EndLoop
 	EndThread
 	Return
 	End
@@ -89,7 +97,7 @@
 
 #new:DefenseTable $DefenseTable_80219610
 {
-	.Element:Normal 00000000
+	.Element:Normal 00000064
 	.Element:End
 }
 
@@ -121,13 +129,13 @@
 
 #new:PartsTable $PartsTable_802196C8
 {
-	00800000 01000000 001400FF $IdleAnimations_80219714 $DefenseTable_80219610 00000000 00000000 00F60000 00000000
+	00800000 01000000 002400FF $IdleAnimations_80219714 $DefenseTable_80219610 00000000 00000000 00F60000 00000000
 }
 
 #new:Actor $ShiftT
 {
 	% stats
-	[Index]         7b
+	[Index]         D4b
 	[Level]         5`b
 	[MaxHP]         2`b
 	[Coins]         1`b
@@ -168,7 +176,7 @@
 
 #new:Script $Script_Init_ShiftT
 {
-        Call  SetActorPos ( .Actor:Self 50` 95` -18` )
+        Call  SetActorPos ( .Actor:Self 60` 95` -18` )
     0:  Call  BindTakeTurn      ( .Actor:Self $Script_TakeTurn_ShiftT )
    28:  Call  BindHandleEvent   ( .Actor:Self $Script_HandleEvent_ShiftT )
    3C:  Return
@@ -189,8 +197,217 @@
 {
     0:  Call  UseIdleAnimation  ( .Actor:Self .False )
    14:  Call  EnableIdleScript  ( .Actor:Self 00000000 )
-  C90:  Call  EnableIdleScript  ( .Actor:Self 00000001 )
-  CA4:  Call  UseIdleAnimation  ( .Actor:Self .True )
+   Wait 10`
+   		Call  UseBattleCamPreset    ( 00000013 )
+        50:  Call  GetActorPos       ( .Actor:Self *Var0 *Var1 *Var2 )
+        Sub *Var1 30`
+        6C:  Call  SetBattleCamTarget    ( *Var0 *Var1 *Var2 )
+        84:  Call  SetBattleCamZoom  (  250` )
+        94:  Call  SetBattleCamOffsetZ   (  55` )
+        A4:  Call  BattleCamTargetActor  ( .Actor:Self )
+        B4:  Call  MoveBattleCamOver (  10` )
+        C4:  Wait  10`
+		Call  UseIdleAnimation  ( .Actor:Enemy1 .False )
+		14:  Call  EnableIdleScript  ( .Actor:Enemy1 00000000 )
+		Call SetAnimation ( .Actor:Enemy1 00000001 00D60006 )
+   Call ActorSpeak ( 00010001 .Actor:Self 00000001 00650004 00650001 )
+   		Call  UseBattleCamPreset    ( 00000013 )
+        50:  Call  GetActorPos       ( .Actor:Enemy1 *Var0 *Var1 *Var2 )
+        Sub *Var1 30`
+        6C:  Call  SetBattleCamTarget    ( *Var0 *Var1 *Var2 )
+        84:  Call  SetBattleCamZoom  (  250` )
+        94:  Call  SetBattleCamOffsetZ   (  55` )
+        A4:  Call  BattleCamTargetActor  ( .Actor:Self )
+        B4:  Call  MoveBattleCamOver (  10` )
+        C4:  Wait  10`
+   Call ActorSpeak ( 00010002 .Actor:Enemy1 00000001 00D60006 00D60006 )
+   		Call  UseBattleCamPreset    ( 00000013 )
+        50:  Call  GetActorPos       ( .Actor:Self *Var0 *Var1 *Var2 )
+        Sub *Var1 30`
+        6C:  Call  SetBattleCamTarget    ( *Var0 *Var1 *Var2 )
+        84:  Call  SetBattleCamZoom  (  250` )
+        94:  Call  SetBattleCamOffsetZ   (  55` )
+        A4:  Call  BattleCamTargetActor  ( .Actor:Self )
+        B4:  Call  MoveBattleCamOver (  10` )
+        C4:  Wait  10`
+	Call SetAnimation ( .Actor:Enemy1 00000001 00D60001 )
+   Call ActorSpeak ( 00010003 .Actor:Self 00000001 00650004 00650001 )
+   		Call  UseBattleCamPreset    ( 00000002 )
+        474:  Call  MoveBattleCamOver (  10` )
+		Wait 30`
+	Call FadeOutMusic ( 00000000 0000014F )
+   Call  ShowMessageAtScreenPos    ( 00010004  160`  40` )
+   Call SetGoalPos ( .Actor:Enemy2 -50` 0` 5` )
+   Call RunToGoal ( .Actor:Enemy2 60` .True )
+   Call SetMusicTrack ( 00000000 .Song:FuzzyAttack 00000000 00000008 )
+   Call ActorSpeak ( 00010006 .Actor:Enemy2 00000001 00A90004 00A90001 )
+   			Call  UseBattleCamPreset    ( 00000013 )
+        50:  Call  GetActorPos       ( .Actor:Player *Var0 *Var1 *Var2 )
+        Sub *Var1 30`
+        6C:  Call  SetBattleCamTarget    ( *Var0 *Var1 *Var2 )
+        84:  Call  SetBattleCamZoom  (  200` )
+        94:  Call  SetBattleCamOffsetZ   (  55` )
+        A4:  Call  BattleCamTargetActor  ( .Actor:Enemy2 )
+        B4:  Call  MoveBattleCamOver (  10` )
+        C4:  Wait  10`
+   Call ActorSpeak ( 00010007 .Actor:Enemy1 00000001 00D60002 00D60004 )
+   Call SetActorYaw ( .Actor:Enemy2 0` )
+   Call ActorSpeak ( 00010008 .Actor:Enemy2 00000001 00A90004 00A90001 )
+   Call UseIdleAnimation ( .Actor:Player .False )
+   Call SetAnimation ( .Actor:Player 00000000 00010029 ) 
+   Wait 20`
+   Call GetActorPos ( .Actor:Player *Var0 *Var1 *Var2 )
+   Call SetGoalPos ( .Actor:Player -250` 0` 0` )
+   Call RunToGoal ( .Actor:Player 30` .True )
+   Call UseIdleAnimation ( .Actor:Enemy2 .False )
+   Call  EnableIdleScript  ( .Actor:Enemy2 00000000 )
+   Call SetGoalPos ( .Actor:Enemy2 *Var0 *Var1 *Var2 )
+   Call SetHomePos ( .Actor:Enemy2 *Var0 *Var1 *Var2 )
+   Call RunToGoal ( .Actor:Enemy2 15` .True )
+   Call SetActorYaw ( .Actor:Enemy2 180` )
+   Call ActorSpeak ( 00010009 .Actor:Enemy2 00000001 00A90004 00A90001 )
+		Call  UseBattleCamPreset    ( 00000013 )
+		50:  Call  GetActorPos       ( .Actor:Self *Var0 *Var1 *Var2 )
+		Sub *Var1 30`
+		6C:  Call  SetBattleCamTarget    ( *Var0 *Var1 *Var2 )
+		84:  Call  SetBattleCamZoom  (  250` )
+		94:  Call  SetBattleCamOffsetZ   (  55` )
+		A4:  Call  BattleCamTargetActor  ( .Actor:Self )
+		B4:  Call  MoveBattleCamOver (  10` )
+		C4:  Wait  10`
+	Call ActorSpeak ( 0001000A .Actor:Self 00000001 00650004 00650001 )
+		Call  UseBattleCamPreset    ( 00000013 )
+		50:  Call  GetActorPos       ( .Actor:Enemy2 *Var0 *Var1 *Var2 )
+		Sub *Var1 30`
+		6C:  Call  SetBattleCamTarget    ( *Var0 *Var1 *Var2 )
+		84:  Call  SetBattleCamZoom  (  250` )
+		94:  Call  SetBattleCamOffsetZ   (  55` )
+		A4:  Call  BattleCamTargetActor  ( .Actor:Enemy2 )
+		B4:  Call  MoveBattleCamOver (  10` )
+		C4:  Wait  10`
+	Call ActorSpeak ( 0001000B .Actor:Enemy2 00000001 00A90004 00A90001 )
+		Call  UseBattleCamPreset    ( 00000013 )
+		50:  Call  GetActorPos       ( .Actor:Self *Var0 *Var1 *Var2 )
+		Sub *Var1 30`
+		6C:  Call  SetBattleCamTarget    ( *Var0 *Var1 *Var2 )
+		84:  Call  SetBattleCamZoom  (  250` )
+		94:  Call  SetBattleCamOffsetZ   (  55` )
+		A4:  Call  BattleCamTargetActor  ( .Actor:Self )
+		B4:  Call  MoveBattleCamOver (  10` )
+		C4:  Wait  10`
+	Call ActorSpeak ( 0001000C .Actor:Self 00000001 00650004 00650001 )
+		Call  UseBattleCamPreset    ( 00000013 )
+		50:  Call  GetActorPos       ( .Actor:Enemy2 *Var0 *Var1 *Var2 )
+		Sub *Var1 30`
+		6C:  Call  SetBattleCamTarget    ( *Var0 *Var1 *Var2 )
+		84:  Call  SetBattleCamZoom  (  250` )
+		94:  Call  SetBattleCamOffsetZ   (  55` )
+		A4:  Call  BattleCamTargetActor  ( .Actor:Enemy2 )
+		B4:  Call  MoveBattleCamOver (  10` )
+		C4:  Wait  10`
+	Call ActorSpeak ( 0001000D .Actor:Enemy2 00000001 00A90006 00A90001 )
+		Call  UseBattleCamPreset    ( 00000013 )
+		50:  Call  GetActorPos       ( .Actor:Self *Var0 *Var1 *Var2 )
+		Sub *Var1 30`
+		6C:  Call  SetBattleCamTarget    ( *Var0 *Var1 *Var2 )
+		84:  Call  SetBattleCamZoom  (  250` )
+		94:  Call  SetBattleCamOffsetZ   (  55` )
+		A4:  Call  BattleCamTargetActor  ( .Actor:Self )
+		B4:  Call  MoveBattleCamOver (  10` )
+		C4:  Wait  10`
+	Call ActorSpeak ( 0001000E .Actor:Self 00000001 00650004 00650001 )
+			Call  UseBattleCamPreset    ( 00000013 )
+		50:  Call  GetActorPos       ( .Actor:Enemy2 *Var0 *Var1 *Var2 )
+		Sub *Var1 30`
+		6C:  Call  SetBattleCamTarget    ( *Var0 *Var1 *Var2 )
+		84:  Call  SetBattleCamZoom  (  250` )
+		94:  Call  SetBattleCamOffsetZ   (  55` )
+		A4:  Call  BattleCamTargetActor  ( .Actor:Enemy2 )
+		B4:  Call  MoveBattleCamOver (  10` )
+		C4:  Wait  10`
+	Call ActorSpeak ( 0001000F .Actor:Enemy2 00000001 00A90004 00A90001 )
+	Call ActorSpeak ( 00010010 .Actor:Enemy1 00000001 00D60002 00D60004 )
+	Call  SetBattleCamZoom  (  150` )
+	Call ActorSpeak ( 00010011 .Actor:Enemy2 00000001 00A90009 00A90009 )
+	Call  UseBattleCamPreset    ( 00000002 )
+        474:  Call  MoveBattleCamOver (  10` )
+		Call SetAnimation ( .Actor:Enemy2 00000001 00A90001 )
+		Call SetActorJumpGravity ( .Actor:Enemy2 *Fixed[0.5] )
+		Call JumpToGoal ( .Actor:Enemy2 20` .False .True .True )
+		Call ActorSpeak ( 00010012 .Actor:Enemy2 00000001 00A90004 00A90001 )
+		Call SetGoalPos ( .Actor:Enemy2 65` 0` 0` )
+		Call SetAnimation ( .Actor:Enemy2 00000001 00A90008 )
+		Call RunToGoal ( .Actor:Enemy2 30` .True )
+		Call PlaySoundAtActor ( .Actor:Enemy2 .Sound:HitBlock )
+		Call JumpToGoal ( .Actor:Enemy2 10` .False .False .True )
+		Call SetGoalToHome ( .Actor:Enemy2 )
+		Call SetAnimation ( .Actor:Enemy2 00000001 00A90003 )
+		Call RunToGoal ( .Actor:Enemy2 45` .True )
+		Call SetAnimation ( .Actor:Enemy2 00000001 00A90001 )
+		Call SetActorYaw ( .Actor:Enemy2 180` )
+		Call SetActorVar ( .Actor:Self 00000000 00000001 )
+		Wait 60`
+		Call  MakeLerp  ( 0` -69` 10` .Easing:CosIn )
+		88:  Loop
+		94:  	Call  UpdateLerp ( )
+		A0:  	Call  TranslateGroup    ( ~Model:kmr_new:ArmGroupL 00000000 *Var0 00000000 )
+		BC:  	Wait  1`
+		C8:  	If  *Var1  ==  00000000
+		D8:  		BreakLoop
+		E0:  	EndIf
+		E8:  EndLoop
+		Wait 20`
+		Call  MakeLerp  ( 0` -69` 10` .Easing:CosIn )
+		88:  Loop
+		94:  	Call  UpdateLerp ( )
+		A0:  	Call  TranslateGroup    ( ~Model:kmr_new:ArmGroupR 00000000 *Var0 00000000 )
+		BC:  	Wait  1`
+		C8:  	If  *Var1  ==  00000000
+		D8:  		BreakLoop
+		E0:  	EndIf
+		E8:  EndLoop
+		Wait 10`
+		Call  MakeLerp  ( 0` -60` 10` .Easing:CosIn )
+		88:  Loop
+		94:  	Call  UpdateLerp ( )
+		A0:  	Call  TranslateGroup    ( ~Model:kmr_new:BodyGroup 00000000 *Var0 00000000 )
+				Add *Var0 95`
+				Call  SetActorPos ( .Actor:Enemy0 60` *Var0 -18` )
+		BC:  	Wait  1`
+		C8:  	If  *Var1  ==  00000000
+		D8:  		BreakLoop
+		E0:  	EndIf
+		E8:  EndLoop
+		Call EnableModel ( ~Model:kmr_new:Dome .False )
+		Call GetActorPos ( .Actor:Self *Var0 *Var1 *Var2 )
+		Call PlaySoundAtActor ( .Actor:Self .Sound:BombBlast )
+		Call  PlayEffect        ( ~FX:Explosion3 *Var0 *Var1 *Var2 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 )
+		Call SetGoalPos ( .Actor:Self *Var0 *Var1 *Var2 )
+		Call SetActorJumpGravity ( .Actor:Self *Fixed[0.8] )
+		Call JumpToGoal ( .Actor:Self 40` .False .False .False )
+		Call  UseBattleCamPreset    ( 00000013 )
+		50:  Call  GetActorPos       ( .Actor:Self *Var0 *Var1 *Var2 )
+		Sub *Var1 30`
+		6C:  Call  SetBattleCamTarget    ( *Var0 *Var1 *Var2 )
+		84:  Call  SetBattleCamZoom  (  250` )
+		94:  Call  SetBattleCamOffsetZ   (  55` )
+		A4:  Call  BattleCamTargetActor  ( .Actor:Self )
+		B4:  Call  MoveBattleCamOver (  10` )
+		C4:  Wait  10`
+		Call ActorSpeak ( 00010013 .Actor:Self 00000001 00650004 00650001 )
+		Call SetActorYaw ( .Actor:Enemy2 0` )
+		Call  UseBattleCamPreset    ( 00000013 )
+		50:  Call  GetActorPos       ( .Actor:Enemy2 *Var0 *Var1 *Var2 )
+		Sub *Var1 30`
+		6C:  Call  SetBattleCamTarget    ( *Var0 *Var1 *Var2 )
+		84:  Call  SetBattleCamZoom  (  250` )
+		94:  Call  SetBattleCamOffsetZ   (  55` )
+		A4:  Call  BattleCamTargetActor  ( .Actor:Enemy2 )
+		B4:  Call  MoveBattleCamOver (  10` )
+		C4:  Wait  10`
+	Call ActorSpeak ( 00010014 .Actor:Enemy1 00000001 00D60002 00D60004 )
+	Call ActorSpeak ( 00010015 .Actor:Enemy2 00000001 00A90004 00A90001 )
+	Call SetBattleState ( .BattleState:EndBattle )
   CB8:  Return
   CC0:  End
 }
@@ -229,7 +446,7 @@
 
 #new:PartsTable $PartsTable_8021B088
 {
-	00800000 01000000 001800FF $IdleAnimations_8021B0D4 $DefenseTable_8021AFD0 00000010 00000000 00F40000 00000000
+	00020000 01000000 001800FF $IdleAnimations_8021B0D4 $DefenseTable_8021AFD0 00000010 00000000 00F40000 00000000
 }
 
 #new:Actor $Peach
@@ -239,7 +456,7 @@
 	[Level]         6`b
 	[MaxHP]         2`b
 	[Coins]         1`b
-	[Flags]       00000000
+	[Flags]       00404000
 	[StatusTable] $StatusTable_8021AFDC
 	% ai
 	[PartsCount]    1`s
@@ -264,19 +481,19 @@
 {
 	.Status:Normal    00D60001
 	.Status:Stone     00D60000
-	.Status:Sleep     00D6000A
+	.Status:Sleep     00D60001
 	.Status:Poison    00D60001
 	.Status:Stop      00D60000
 	.Status:Static    00D60001
 	.Status:Paralyze  00D60000
-	.Status:Dizzy     00D60009
-	.Status:Fear      00D60009
+	.Status:Dizzy     00D60001
+	.Status:Fear      00D60001
 	.Status:End
 }
 
 #new:Script $Script_Init_Peach
 {
-        Call  SetActorPos ( .Actor:Self 50` 95` -18` )
+        Call  SetActorPos ( .Actor:Self -130`  0`  -12` )
         Call  SetActorYaw ( .Actor:Self 180` )
     0:  Call  BindTakeTurn      ( .Actor:Self $Script_TakeTurn_8021BDDC )
    28:  Call  BindHandleEvent   ( .Actor:Self $Script_HandleEvent_8021B494 )
@@ -370,7 +587,7 @@
 
 #new:PartsTable $PartsTable_8021CC70
 {
-	00800000 02000000 001800FF $IdleAnimations_8021CD28 $DefenseTable_8021CB0C 00004000 00000000 00F60000 00000000
+	00020000 02000000 001800FF $IdleAnimations_8021CD28 $DefenseTable_8021CB0C 00004000 00000000 00F60000 00000000
 }
 
 #new:Actor $RussT
@@ -380,7 +597,7 @@
 	[Level]         6`b
 	[MaxHP]         2`b
 	[Coins]         1`b
-	[Flags]       00000200
+	[Flags]       00404000
 	[StatusTable] $StatusTable_8021CBC4
 	% ai
 	[PartsCount]    1`s
@@ -417,7 +634,7 @@
 
 #new:Script $Script_Init_8021CDD8
 {
-        Call  SetActorPos ( .Actor:Self -250` 0` 0` )
+        Call  SetActorPos ( .Actor:Self -250` 0` 5` )
         Call  SetActorYaw ( .Actor:Self 180` )
     0:  Call  BindTakeTurn      ( .Actor:Self $Script_TakeTurn_8021D74C )
    28:  Call  BindHandleEvent   ( .Actor:Self $Script_HandleEvent_8021D158 )

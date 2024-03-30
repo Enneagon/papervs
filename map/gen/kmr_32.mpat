@@ -26,9 +26,20 @@
 	End
 }
 
+#new:Function_Init $Function_Init
+{
+	PUSH    RA
+	LIA     A0, 800B0CF0
+	LIA     A1, "kkj_tex"
+	JAL     800654F0 % sprintf
+	RESERVED
+	CLEAR  V0
+	JPOP   RA
+}
+
 #new:Script $Script_SetupMusic
 {
-	Call  FadeOutMusic  ( 00000000 500` ) % usually between 500-1000
+	Call  SetMusicTrack ( 00000000 .Song:PleasantPath 00000000 00000008 )
 	Call  ClearAmbientSounds ( 250` )
 	Return
 	End

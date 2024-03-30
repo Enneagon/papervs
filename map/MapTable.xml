@@ -23,6 +23,7 @@
 		<Stage name="kmr_bt04"/>
 		<Stage name="kmr_bt05"/>
 		<Stage name="kmr_bt06"/>
+		<Stage name="kmr_new" nickname="Storytime"/>
 	</Area>
 	<Area name="mac" nickname="Toad Town">
 		<Map name="machi" nickname="Debug Warp Zone"/>

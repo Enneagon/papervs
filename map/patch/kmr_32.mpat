@@ -1,11 +1,118 @@
+#define .NpcID:RussT            00
+#define .NpcID:Peach     	    01
+#define .NpcID:Bowser           02
+
 @ $Script_Main
 {
 	Call  SetCamPerspective  ( .Cam:Default 00000003 00000019 00000010 00001000 )
 	Call  SetCamBGColor      ( .Cam:Default 00000000 00000000 00000000 )
 	Call  SetCamEnabled      ( .Cam:Default .True
 	Call  SetCamLeadPlayer   ( .Cam:Default .False )
+    Call  MakeNpcs  ( .False $NpcGroupList_Dank )
 	Exec  $Script_SetupMusic
 	Exec  $Script_EnterMap
+	Return
+	End
+}
+
+#new:NpcGroupList $NpcGroupList_Dank
+{
+	00000001 $NpcGroup_Dank 30000000
+	00000002 $NpcGroup_Other 00000000
+	00000000 00000000 00000000
+}
+
+#new:NpcGroup $NpcGroup_Dank
+{
+	.NpcID:RussT $NpcSettings_All ~Vec3f:RussT % 0 -1000 0
+	00000001 $Script_Init_Russ 00000000 00000000 0000005A
+	~NoDrops
+	~Movement:RussT
+	~AnimationTable:RussT % .Sprite:WorldParakarry
+	00000000 00000000 00000000 00000000 % no tattle string
+}
+
+#new:NpcGroup $NpcGroup_Other
+{
+	.NpcID:Peach $NpcSettings_All ~Vec3f:Peach % 0 -1000 0
+	00000001 $Script_Init_Peach 00000000 00000000 0000005A
+	~NoDrops
+	~Movement:Peach
+	~AnimationTable:Peach % .Sprite:WorldParakarry
+	00000000 00000000 00000000 00000000 % no tattle string
+    %
+    .NpcID:Bowser $NpcSettings_All ~Vec3f:Bowser % 0 -1000 0
+	00000001 $Script_Init_Bowser 00000000 00000000 0000005A
+	~NoDrops
+	~Movement:Bowser
+	~AnimationTable:Bowser % .Sprite:WorldParakarry
+	00000000 00000000 00000000 00000000 % no tattle string
+}
+
+#new:NpcSettings $NpcSettings_All
+{
+	00000000 001C0018 00000000 00000000 00000000 00000000 00000000 00000000
+	00000000 00000000 00630000
+}
+
+#new:Script $Script_Init_Russ
+{
+    Call  BindNpcIdle ( .NpcID:RussT $Script_RussT_Idle )
+	Call BindNpcDefeat ( .NpcID:RussT $Script_RussT_Defeat )
+  348:  Return
+  350:  End
+}
+
+#new:Script $Script_Init_Peach
+{
+	Call SetNpcYaw ( .NpcID:Peach 270` )
+    348:  Return
+  350:  End
+}
+
+#new:Script $Script_Init_Bowser
+{
+	Call SetNpcYaw ( .NpcID:Bowser 270` )
+    348:  Return
+  350:  End
+}
+
+#new:Script $Script_RussT_Idle
+{
+	Call DisablePlayerInput ( .True )
+	Wait 20`
+	Call  ShowMessageAtScreenPos    ( 00010000  160`  40` )
+	Call StartBossBattle ( .Song:SpecialBattle )
+	Call  GetBattleOutcome  ( *Var0 )
+7C:  Switch  *Var0
+88:  	Case  ==  .Outcome:PlayerWon % 0
+AC:  	Case  ==  .Outcome:PlayerLost % 1
+B8:  	Case  ==  .Outcome:PlayerFled % 2
+C4:  EndSwitch
+	Return
+	End
+}
+
+#new:Script $Script_RussT_Defeat
+{
+	Call FadeOutMusic ( 00000000 00000001 )
+	Call  UseSettingsFrom   ( .Cam:Default 0` 200` 0` )
+	Call  PanToTarget   ( .Cam:Default 00000000 00000001 )
+	Call SpeakToPlayer ( .NpcID:RussT 00A90004 00A90001 00000000 00010016 )
+	Wait 20`
+	Call SpeakToPlayer ( .NpcID:RussT 00A90004 00A90001 00000000 00010017 )
+	Call  UseSettingsFrom   ( .Cam:Default 0` 300` 0` )
+	Call  PanToTarget   ( .Cam:Default 00000000 00000001 )
+	Wait 90`
+	Call  UseSettingsFrom   ( .Cam:Default 0` 200` 0` )
+	Call  PanToTarget   ( .Cam:Default 00000000 00000001 )
+	Call SpeakToPlayer ( .NpcID:RussT 00A90006 00A90001 00000000 00010018 )
+	Wait 45`
+	Call SetMusicTrack ( 00000000 .Song:FuzzyAttack 00000000 00000008 )
+	Call  ShowMessageAtScreenPos    ( 00010019 160`  40` )
+	Loop 
+		Wait 10`
+	EndLoop
 	Return
 	End
 }
