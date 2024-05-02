@@ -26,7 +26,7 @@
 	"kmr_new_hit"  % kkj_bt01_hit
 	$Script_BeforeBattle_802342A0
 	00000000
-	00000000
+	"kpa_bg"
 	$ForegroundModelList_802342D0
 	00000000
 	00000000
@@ -236,6 +236,8 @@
         474:  Call  MoveBattleCamOver (  10` )
 		Wait 30`
 	Call FadeOutMusic ( 00000000 0000014F )
+	Call UseIdleAnimation ( .Actor:Enemy2 .False )
+	Call  EnableIdleScript  ( .Actor:Enemy2 00000000 )
    Call  ShowMessageAtScreenPos    ( 00010004  160`  40` )
    Call SetGoalPos ( .Actor:Enemy2 -50` 0` 5` )
    Call RunToGoal ( .Actor:Enemy2 60` .True )
@@ -251,7 +253,17 @@
         B4:  Call  MoveBattleCamOver (  10` )
         C4:  Wait  10`
    Call ActorSpeak ( 00010007 .Actor:Enemy1 00000001 00D60002 00D60004 )
-   Call SetActorYaw ( .Actor:Enemy2 0` )
+   Thread
+		Call MakeLerp ( 180` 0` 5` .Easing:Linear )
+		Loop
+			94:  	Call  UpdateLerp ( )
+			A0:  	Call SetActorYaw ( .Actor:Enemy2 *Var0 )
+			BC:  	Wait  1`
+			C8:  	If  *Var1  ==  00000000
+			D8:  		BreakLoop
+			E0:  	EndIf
+			E8:  EndLoop
+   EndThread
    Call ActorSpeak ( 00010008 .Actor:Enemy2 00000001 00A90004 00A90001 )
    Call UseIdleAnimation ( .Actor:Player .False )
    Call SetAnimation ( .Actor:Player 00000000 00010029 ) 
@@ -259,12 +271,20 @@
    Call GetActorPos ( .Actor:Player *Var0 *Var1 *Var2 )
    Call SetGoalPos ( .Actor:Player -250` 0` 0` )
    Call RunToGoal ( .Actor:Player 30` .True )
-   Call UseIdleAnimation ( .Actor:Enemy2 .False )
-   Call  EnableIdleScript  ( .Actor:Enemy2 00000000 )
    Call SetGoalPos ( .Actor:Enemy2 *Var0 *Var1 *Var2 )
    Call SetHomePos ( .Actor:Enemy2 *Var0 *Var1 *Var2 )
    Call RunToGoal ( .Actor:Enemy2 15` .True )
-   Call SetActorYaw ( .Actor:Enemy2 180` )
+   Thread
+	Call MakeLerp ( 0` 180` 5` .Easing:Linear )
+	Loop
+		94:  	Call  UpdateLerp ( )
+		A0:  	Call SetActorYaw ( .Actor:Enemy2 *Var0 )
+		BC:  	Wait  1`
+		C8:  	If  *Var1  ==  00000000
+		D8:  		BreakLoop
+		E0:  	EndIf
+		E8:  EndLoop
+EndThread
    Call ActorSpeak ( 00010009 .Actor:Enemy2 00000001 00A90004 00A90001 )
 		Call  UseBattleCamPreset    ( 00000013 )
 		50:  Call  GetActorPos       ( .Actor:Self *Var0 *Var1 *Var2 )
@@ -333,6 +353,7 @@
         474:  Call  MoveBattleCamOver (  10` )
 		Call SetAnimation ( .Actor:Enemy2 00000001 00A90001 )
 		Call SetActorJumpGravity ( .Actor:Enemy2 *Fixed[0.5] )
+		Call PlaySoundAtActor ( .Actor:Enemy2 .Sound:Jump )
 		Call JumpToGoal ( .Actor:Enemy2 20` .False .True .True )
 		Call ActorSpeak ( 00010012 .Actor:Enemy2 00000001 00A90004 00A90001 )
 		Call SetGoalPos ( .Actor:Enemy2 65` 0` 0` )
@@ -344,7 +365,6 @@
 		Call SetAnimation ( .Actor:Enemy2 00000001 00A90003 )
 		Call RunToGoal ( .Actor:Enemy2 45` .True )
 		Call SetAnimation ( .Actor:Enemy2 00000001 00A90001 )
-		Call SetActorYaw ( .Actor:Enemy2 180` )
 		Call SetActorVar ( .Actor:Self 00000000 00000001 )
 		Wait 60`
 		Call  MakeLerp  ( 0` -69` 10` .Easing:CosIn )

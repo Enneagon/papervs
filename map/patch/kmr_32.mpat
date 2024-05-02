@@ -97,7 +97,10 @@ C4:  EndSwitch
 {
 	Call FadeOutMusic ( 00000000 00000001 )
 	Call  UseSettingsFrom   ( .Cam:Default 0` 200` 0` )
+	Call  SetCamSpeed   ( .Cam:Default *Fixed[90.0] )
 	Call  PanToTarget   ( .Cam:Default 00000000 00000001 )
+	Wait 20`
+	Call  SetCamSpeed   ( .Cam:Default *Fixed[1.0] )
 	Call SpeakToPlayer ( .NpcID:RussT 00A90004 00A90001 00000000 00010016 )
 	Wait 20`
 	Call SpeakToPlayer ( .NpcID:RussT 00A90004 00A90001 00000000 00010017 )
@@ -106,6 +109,7 @@ C4:  EndSwitch
 	Wait 90`
 	Call  UseSettingsFrom   ( .Cam:Default 0` 200` 0` )
 	Call  PanToTarget   ( .Cam:Default 00000000 00000001 )
+	Wait 30`
 	Call SpeakToPlayer ( .NpcID:RussT 00A90006 00A90001 00000000 00010018 )
 	Wait 45`
 	Call SetMusicTrack ( 00000000 .Song:FuzzyAttack 00000000 00000008 )

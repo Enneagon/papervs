@@ -230,7 +230,19 @@
 #message:01:019
 {
 	[Style Narrate]
-	Get trolled lol[Wait][End]
+	Get trolled lol[BR]
+	[Wait][Next]
+	A game by [SaveColor][Color:08]Nine[RestoreColor][BR][BR]
+	(Check out enneagon.itch.io)[BR]
+	[Wait][Next]
+	Not a real submission to the Star[BR]
+	Haven Battle Jam[BR]
+	[Wait][Next]
+	Um...[BR]
+	[Wait][Next]
+	That's it I guess.[BR]
+	[Wait][Next]
+	Enjoy your softlock![Wait][End]
 }
 
 #message:01:01A
